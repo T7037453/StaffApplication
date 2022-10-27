@@ -22,13 +22,22 @@ namespace StaffApplication.Services.Products
 
             }
             response.EnsureSuccessStatusCode();
-            var product = await response.Content.Read<ProductDto>();
+            var product = await response.Content.ReadAsAsync<ProductDto>();
             return product;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetProductsAsync(string subject)
+        public async Task<IEnumerable<ProductDto>> GetProductsAsync(string brand)
         {
-            
+            var uri = "api/products?brand=TestBrand1";
+            if (brand != null)
+            {
+                uri = uri + "&brand =" + brand;
+
+            }
+            var response= await _client.GetAsync(uri);
+            response.EnsureSuccessStatusCode();
+            var products = await response.Content.ReadAsAsync<IEnumerable<ProductDto>>();
+            return products;
         }
     }
 }
