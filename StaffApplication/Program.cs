@@ -1,7 +1,20 @@
+using StaffApplication.Services.Products;
+
 var builder = WebApplication.CreateBuilder(args);
+
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddTransient<IProductsRepository, FakeProductsRepository>();
+}
+else
+{
+    builder.Services.AddHttpClient<IProductsRepository, ProductRepository>();
+}
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 
