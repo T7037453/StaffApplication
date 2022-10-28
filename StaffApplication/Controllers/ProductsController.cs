@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collection.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using StaffApplication.Services.Products;
 
@@ -13,7 +12,7 @@ namespace StaffApplication.Controllers
         private readonly ILogger _logger;
         private readonly IProductsRepository _productsRepository;
 
-        public ProductsController(Ilogger<ProductsController> logger, 
+        public ProductsController(ILogger<ProductsController> logger, 
                                   IProductsRepository productsRepository)
         {
             _logger = logger;
@@ -21,7 +20,7 @@ namespace StaffApplication.Controllers
         }
 
         // GET: /products/
-        public async Task<IActionResult> Index([FromQuery] string? brand)
+        public async Task<IActionResult> Index([FromQuery] string? name)
         {
             if(!ModelState.IsValid)
             {
@@ -29,10 +28,10 @@ namespace StaffApplication.Controllers
 
             }
 
-            IEnumberable<ProductDto> products = null;
+            IEnumerable<ProductDto> products = null;
             try
             {
-                products = await _productsRepository.GetProductsAsync(brand);
+                products = await _productsRepository.GetProductsAsync(name);
             }
             catch
             {
@@ -43,7 +42,7 @@ namespace StaffApplication.Controllers
         }
 
         // GET: /products/details/{id}
-        public async Task<IActionResult> Details (int id)
+        public async Task<IActionResult> Details (int? id)
         {
             if (id == null)
             {
@@ -52,7 +51,7 @@ namespace StaffApplication.Controllers
 
             try
             {
-                var product = await _productsRepository.GetProductsAsync(id.Value);
+                var product = await _productsRepository.GetProductAsync(id.Value);
                 if (product == null)
                 {
                     return NotFound();

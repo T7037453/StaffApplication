@@ -8,7 +8,7 @@ namespace StaffApplication.Services.Products
         private readonly HttpClient _client;
         public ProductRepository(HttpClient client)
         {
-            client.BaseAddress = new System.Uri("http://localhost:3733/");
+            client.BaseAddress = new System.Uri("http://localhost:7061/");
             client.Timeout = TimeSpan.FromSeconds(5);
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             _client = client;
@@ -26,12 +26,12 @@ namespace StaffApplication.Services.Products
             return product;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetProductsAsync(string brand)
+        public async Task<IEnumerable<ProductDto>> GetProductsAsync(string name)
         {
             var uri = "api/products?brand=TestBrand1";
-            if (brand != null)
+            if (name != null)
             {
-                uri = uri + "&brand =" + brand;
+                uri = uri + "&brand =" + name;
 
             }
             var response= await _client.GetAsync(uri);
