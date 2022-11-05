@@ -6,9 +6,11 @@ namespace StaffApplication.Services.Products;
 public class ProductRepository : IProductsRepository
 {
     private readonly HttpClient _client;
-    public ProductRepository(HttpClient client)
+    public ProductRepository(HttpClient client,
+                             IConfiguration configuration)
     {
-        client.BaseAddress = new System.Uri("http://localhost:3733/");
+        var baseUrl = configuration["WebServices:Products:BaseURL"];
+        client.BaseAddress = new System.Uri(baseUrl);
         client.Timeout = TimeSpan.FromSeconds(5);
         client.DefaultRequestHeaders.Add("Accept", "application/json");
         _client = client;
