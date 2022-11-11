@@ -17,26 +17,26 @@ public class ProductRepository : IProductsRepository
     }
     public async Task<ProductDto> GetProductAsync(int id)
     {
-       var response = await _client.GetAsync("api/products/" + id);
+        var response = await _client.GetAsync("/products" + id);
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return null;
 
         }
-        response.EnsureSuccessStatusCode();
+        //response.EnsureSuccessStatusCode();
         var product = await response.Content.ReadAsAsync<ProductDto>();
         return product;
     }
 
     public async Task<IEnumerable<ProductDto>> GetProductsAsync(string name)
     {
-        var uri = "api/products?description=TestDesc";
+        var uri = "/products?description=Test_Desc";
         if (name != null)
         {
             uri = uri + "&name=" + name;
 
         }
-        var response= await _client.GetAsync(uri);
+        var response = await _client.GetAsync(uri);
         response.EnsureSuccessStatusCode();
         var products = await response.Content.ReadAsAsync<IEnumerable<ProductDto>>();
         return products;
