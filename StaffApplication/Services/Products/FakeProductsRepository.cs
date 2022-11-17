@@ -19,6 +19,7 @@ public class FakeProductsRepository : IProductsRepository
         return Task.FromResult(product);
     }
 
+
     public Task<IEnumerable<ProductDto>> GetProductsAsync(string name)
     {
         var products = _products.AsEnumerable();

@@ -17,7 +17,7 @@ public class ProductRepository : IProductsRepository
     }
     public async Task<ProductDto> GetProductAsync(int id)
     {
-        var response = await _client.GetAsync("/products" + id);
+        var response = await _client.GetAsync("/products/" + id);
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return null;
@@ -27,6 +27,8 @@ public class ProductRepository : IProductsRepository
         var product = await response.Content.ReadAsAsync<ProductDto>();
         return product;
     }
+
+
 
     public async Task<IEnumerable<ProductDto>> GetProductsAsync(string name)
     {
