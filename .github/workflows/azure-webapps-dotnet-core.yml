@@ -46,8 +46,8 @@ jobs:
             --configuration $BUILD_CONFIGURATION \
             --no-build \
             --output $PUBLISH_PATH
-      - name: Store build artefact
-        uses: actions/upload-artefact@v3
+      - name: Store build artifact
+        uses: actions/upload-artifact@v3
         with:
           name: build
           path: ${{ env.PUBLISH_PATH }}
@@ -60,7 +60,7 @@ jobs:
 #     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 #   if: github.ref == 'refs/heads/master'
     steps:
-      - uses: actions/download-artefact@v3
+      - uses: actions/download-artifact@v3
         with:
           name: build
           path: ${{ env.PUBLISH_PATH }}
