@@ -32,6 +32,7 @@ public class ProductsController : Controller
         try
         {
             products = await _productsRepository.GetProductsAsync(name);
+
         }
         catch
         {
