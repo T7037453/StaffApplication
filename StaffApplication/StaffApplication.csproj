@@ -10,7 +10,9 @@
 		<None Remove="Microsoft.AspNet.WebApi.Client" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.0.4" />
 		<PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
+		<PackageReference Include="Auth0.AspNetCore.Authentication" Version="1.0.4" />
 	</ItemGroup>
 
 </Project>
