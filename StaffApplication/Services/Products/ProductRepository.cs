@@ -24,7 +24,7 @@ public class ProductRepository : IProductsRepository
         _configuration = configuration;
     }
 
-    record TokenDto(string access_token, string token_type, int expires_in)
+    record TokenDto(string access_token, string token_type, int expires_in);
     public async Task<ProductDto> GetProductAsync(int id)
     {
         //var response = await _client.GetAsync("/products/" + id);
@@ -38,7 +38,7 @@ public class ProductRepository : IProductsRepository
             { "grant_type", "client_credentials" },
             { "client_id", _configuration["Auth:ClientId"] },
             { "client_secret", _configuration["Auth:ClientSecret"] },
-            { "audience", _configuration["Services:Values:AuthAudience"] },
+            { "audience", _configuration["WebServices:Values:AuthAudience"] },
         };
 
         var tokenFrom = new FormUrlEncodedContent(tokenParams);
@@ -48,42 +48,62 @@ public class ProductRepository : IProductsRepository
 
         var client = _clientFactory.CreateClient();
 
-        var serviceBaseAddress = _configuration["Services:Values:BaseAddress"];
+        var serviceBaseAddress = _configuration["WebServices:Products:BaseURL"];
         client.BaseAddress = new Uri(serviceBaseAddress);
         client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
 
-        var response = await client.GetAsync("api/values");
+        var response = await client.GetAsync("/products/" + id);
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadAsAsync<ProductDto>();
         return result;
 
 
-    //    if (response.StatusCode == HttpStatusCode.NotFound)
-    //    {
-    //        return null;
+        //    if (response.StatusCode == HttpStatusCode.NotFound)
+        //    {
+        //        return null;
 
-    //    }
-    //    //response.EnsureSuccessStatusCode();
-    //    var product = await response.Content.ReadAsAsync<ProductDto>();
-    //    return product;
-    //}
+        //    }
+        //    //response.EnsureSuccessStatusCode();
+        //    var product = await response.Content.ReadAsAsync<ProductDto>();
+        //    return product;
+        //}
 
 
-
+    }
 
     public async Task<IEnumerable<ProductDto>> GetProductsAsync(string name)
     {
-        var uri = "/products?description=Test_Desc";
-        if (name != null)
-        {
-            uri = uri + "&name=" + name;
+            var tokenClient = _clientFactory.CreateClient();
 
-        }
-        var response = await _client.GetAsync(uri);
-        response.EnsureSuccessStatusCode();
-        var products = await response.Content.ReadAsAsync<IEnumerable<ProductDto>>();
-        return products;
+            var authBaseAddress = _configuration["Auth:Authority"];
+            tokenClient.BaseAddress = new Uri(authBaseAddress);
+
+            var tokenParams = new Dictionary<string, string>
+            {
+                { "grant_type", "client_credentials" },
+                { "client_id", _configuration["Auth:ClientId"] },
+                { "client_secret", _configuration["Auth:ClientSecret"] },
+                { "audience", _configuration["Services:Values:AuthAudience"] },
+            };
+
+            var tokenFrom = new FormUrlEncodedContent(tokenParams);
+            var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenFrom);
+            tokenResponse.EnsureSuccessStatusCode();
+            var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
+
+            var client = _clientFactory.CreateClient();
+
+            var serviceBaseAddress = _configuration["Services:Values:BaseAddress"];
+            client.BaseAddress = new Uri(serviceBaseAddress);
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
+
+            var response = await client.GetAsync("/products");
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadAsAsync<IEnumerable<ProductDto>>();
+            return result;
     }
 }

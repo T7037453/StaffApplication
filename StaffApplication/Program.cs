@@ -1,4 +1,5 @@
 using StaffApplication.Services.Products;
+using Auth0.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,11 +10,18 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    builder.Services.AddHttpClient<IProductsRepository, ProductRepository>();
+    builder.Services.AddHttpClient<ProductRepository>();
+    builder.Services.AddTransient<IProductsRepository, ProductRepository>();
 }
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuth0WebAppAuthentication(options => {
+    options.Domain = builder.Configuration["Auth:Domain"];
+    options.ClientId = builder.Configuration["Auth:ClientId"];
+});
+
 
 
 var app = builder.Build();
@@ -31,6 +39,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
