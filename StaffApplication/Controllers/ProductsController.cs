@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StaffApplication.Services.Products;
 
@@ -42,6 +43,7 @@ public class ProductsController : Controller
     }
 
     // GET: /products/details/{id}
+    [Authorize]
     public async Task<IActionResult> Details (int? id)
     {
         if (id == null)
