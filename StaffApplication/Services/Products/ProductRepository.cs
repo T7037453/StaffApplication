@@ -38,7 +38,7 @@ public class ProductRepository : IProductsRepository
             { "grant_type", "client_credentials" },
             { "client_id", _configuration["Auth:ClientId"] },
             { "client_secret", _configuration["Auth:ClientSecret"] },
-            { "audience", _configuration["WebServices:Values:AuthAudience"] },
+            { "audience", _configuration["WebServices:Products:AuthAudience"] },
         };
 
         var tokenFrom = new FormUrlEncodedContent(tokenParams);
@@ -85,7 +85,7 @@ public class ProductRepository : IProductsRepository
                 { "grant_type", "client_credentials" },
                 { "client_id", _configuration["Auth:ClientId"] },
                 { "client_secret", _configuration["Auth:ClientSecret"] },
-                { "audience", _configuration["Services:Values:AuthAudience"] },
+                { "audience", _configuration["WebServices:Products:AuthAudience"] },
             };
 
             var tokenFrom = new FormUrlEncodedContent(tokenParams);
@@ -95,7 +95,7 @@ public class ProductRepository : IProductsRepository
 
             var client = _clientFactory.CreateClient();
 
-            var serviceBaseAddress = _configuration["Services:Values:BaseAddress"];
+            var serviceBaseAddress = _configuration["WebServices:Products:BaseURL"];
             client.BaseAddress = new Uri(serviceBaseAddress);
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
