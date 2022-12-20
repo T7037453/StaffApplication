@@ -1,5 +1,8 @@
 using StaffApplication.Services.Products;
 using Auth0.AspNetCore.Authentication;
+using Polly;
+using Polly.Extensions.Http;
+using StaffApplication.Services.Cache;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +13,8 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    builder.Services.AddHttpClient<ProductRepository>();
+    builder.Services.AddHttpClient<IProductsRepository, ProductRepository>()
+                    .AddPolicyHandler(GetRetryPolicy()); ;
     builder.Services.AddTransient<IProductsRepository, ProductRepository>();
 }
 
@@ -21,6 +25,8 @@ builder.Services.AddAuth0WebAppAuthentication(options => {
     options.Domain = builder.Configuration["Auth:Domain"];
     options.ClientId = builder.Configuration["Auth:ClientId"];
 });
+
+builder.Services.AddSingleton<Cache>();
 
 
 
@@ -47,3 +53,19 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+ IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+{
+    return HttpPolicyExtensions
+        .HandleTransientHttpError()
+        .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+        .WaitAndRetryAsync(5, retryAttempt =>
+            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+}
+
+//IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
+//{
+//    return HttpPolicyExtensions
+//        .HandleTransientHttpError()
+//        .CircuitBreakerAsync(5, TimeSpan.FromSeconds(30));
+//}
