@@ -13,8 +13,8 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    builder.Services.AddHttpClient<IProductsRepository, ProductRepository>()
-                    .AddPolicyHandler(GetRetryPolicy()); ;
+    builder.Services.AddHttpClient<ProductRepository>()
+                    .AddPolicyHandler(GetRetryPolicy());
     builder.Services.AddTransient<IProductsRepository, ProductRepository>();
 }
 

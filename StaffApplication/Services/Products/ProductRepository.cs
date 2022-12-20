@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Polly;
 using Polly.Retry;
 using StaffApplication.Services.Cache;
 using System;
@@ -13,7 +14,11 @@ public class ProductRepository : IProductsRepository
     private readonly IHttpClientFactory _clientFactory;
     private readonly IConfiguration _configuration;
     private readonly IMemoryCache _cache;
-    private int retryCount = 3;
+    private readonly IAsyncPolicy<HttpResponseMessage> _retryPolicy =
+        Policy<HttpResponseMessage>
+            .Handle<HttpRequestException>()
+            .OrResult(x => x.StatusCode is >= HttpStatusCode.InternalServerError || x.StatusCode == HttpStatusCode.RequestTimeout)
+            .RetryAsync(5);
 
 
     public ProductRepository(IHttpClientFactory clientFactory,
@@ -62,7 +67,7 @@ public class ProductRepository : IProductsRepository
             new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
 
 
-        var response = await client.GetAsync("/products/" + id);
+        HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.GetAsync("/products/" + id));
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadAsAsync<ProductDto>();
@@ -109,10 +114,10 @@ public class ProductRepository : IProductsRepository
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
 
-            var response = await client.GetAsync("/products");
-            //response.EnsureSuccessStatusCode();
+        HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.GetAsync("/products"));
+        //response.EnsureSuccessStatusCode();
 
-            var result = await response.Content.ReadAsAsync<IEnumerable<ProductDto>>();
+        var result = await response.Content.ReadAsAsync<IEnumerable<ProductDto>>();
             return result;
 
         }

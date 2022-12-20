@@ -13,6 +13,7 @@ public class ProductsController : Controller
 {
     private readonly ILogger _logger;
     private readonly IProductsRepository _productsRepository;
+    private readonly IHttpClientFactory _clientFactory;
 
     public ProductsController(ILogger<ProductsController> logger, 
                               IProductsRepository productsRepository)
