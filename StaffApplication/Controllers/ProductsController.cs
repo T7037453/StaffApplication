@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Polly.Retry;
 using StaffApplication.Services.Products;
 
 namespace StaffApplication.Controllers;
@@ -37,7 +38,9 @@ public class ProductsController : Controller
         catch
         {
             _logger.LogWarning("Exception occured using the Product Repository");
+            
             products = Array.Empty<ProductDto>();
+
         }
         return View(products.ToList());
     }

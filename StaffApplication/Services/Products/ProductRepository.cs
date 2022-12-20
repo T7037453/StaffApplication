@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Polly.Retry;
+using StaffApplication.Services.Cache;
+using System;
 using System.Net;
 using System.Net.Http.Headers;
 
@@ -9,10 +12,13 @@ public class ProductRepository : IProductsRepository
     //private readonly HttpClient _client;
     private readonly IHttpClientFactory _clientFactory;
     private readonly IConfiguration _configuration;
+    private readonly IMemoryCache _cache;
+    private int retryCount = 3;
 
 
     public ProductRepository(IHttpClientFactory clientFactory,
-                             IConfiguration configuration)
+                             IConfiguration configuration,
+                             IMemoryCache cache)
     {
         //var baseUrl = configuration["WebServices:Products:BaseURL"];
         //client.BaseAddress = new System.Uri(baseUrl);
@@ -22,11 +28,13 @@ public class ProductRepository : IProductsRepository
 
         _clientFactory = clientFactory;
         _configuration = configuration;
+        _cache = cache;
     }
 
     record TokenDto(string access_token, string token_type, int expires_in);
     public async Task<ProductDto> GetProductAsync(int id)
     {
+        if (_cache.TryGetValue("ProductsList", out IEnumerable<ProductDto?> productsList)) { return productsList.ToList().FirstOrDefault(pl => pl.Id == id); };
         //var response = await _client.GetAsync("/products/" + id);
         var tokenClient = _clientFactory.CreateClient();
 
@@ -52,6 +60,7 @@ public class ProductRepository : IProductsRepository
         client.BaseAddress = new Uri(serviceBaseAddress);
         client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
+
 
         var response = await client.GetAsync("/products/" + id);
         response.EnsureSuccessStatusCode();
@@ -101,9 +110,11 @@ public class ProductRepository : IProductsRepository
                 new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
 
             var response = await client.GetAsync("/products");
-            response.EnsureSuccessStatusCode();
+            //response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsAsync<IEnumerable<ProductDto>>();
             return result;
+
+        }
     }
-}
+
