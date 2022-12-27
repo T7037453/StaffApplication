@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Polly.Retry;
+using StaffApplication.Models;
 using StaffApplication.Services.Products;
+using StaffApplication.Services.Reviews;
 
 namespace StaffApplication.Controllers;
 
@@ -13,13 +15,16 @@ public class ProductsController : Controller
 {
     private readonly ILogger _logger;
     private readonly IProductsRepository _productsRepository;
+    private readonly IReviewsService _reviewsService;
     private readonly IHttpClientFactory _clientFactory;
 
     public ProductsController(ILogger<ProductsController> logger, 
-                              IProductsRepository productsRepository)
+                              IProductsRepository productsRepository,
+                              IReviewsService reviewsService)
     {
         _logger = logger;
         _productsRepository = productsRepository;
+        _reviewsService = reviewsService;
     }
 
     // GET: /products/
@@ -58,11 +63,15 @@ public class ProductsController : Controller
         try
         {
             var product = await _productsRepository.GetProductAsync(id.Value);
+            var reviews = await _reviewsService.GetReviewsAsync(id.Value);
+            var ViewModel = new ProductDetailsViewModel();
+            ViewModel.product = product;
+            ViewModel.Reviews = reviews;
             if (product == null)
             {
                 return NotFound();
             }
-            return View(product);
+            return View(ViewModel);
 
         }
         catch

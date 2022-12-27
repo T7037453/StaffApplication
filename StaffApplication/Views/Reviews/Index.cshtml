@@ -1,0 +1,45 @@
+﻿@model IEnumerable<StaffApplication.Services.Reviews.ReviewDto>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.firstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.productReviewRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.productReviewContent)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.firstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.productReviewRating)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.productReviewContent)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
