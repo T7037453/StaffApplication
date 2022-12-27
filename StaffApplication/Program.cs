@@ -3,6 +3,7 @@ using Auth0.AspNetCore.Authentication;
 using Polly;
 using Polly.Extensions.Http;
 using StaffApplication.Services.Cache;
+using StaffApplication.Services.Reviews;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,12 +11,17 @@ var builder = WebApplication.CreateBuilder(args);
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddTransient<IProductsRepository, FakeProductsRepository>();
+    builder.Services.AddTransient<IReviewsService, FakeReviewsService>();
 }
 else
 {
     builder.Services.AddHttpClient<ProductRepository>()
                     .AddPolicyHandler(GetRetryPolicy());
     builder.Services.AddTransient<IProductsRepository, ProductRepository>();
+
+    builder.Services.AddHttpClient<ReviewsService>()
+                    .AddPolicyHandler(GetRetryPolicy());
+    builder.Services.AddTransient<IReviewsService, ReviewsService>();
 }
 
 // Add services to the container.

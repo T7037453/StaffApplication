@@ -1,4 +1,4 @@
-﻿@model StaffApplication.Services.Products.ProductDto
+﻿@model StaffApplication.Models.ProductDetailsViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -11,47 +11,89 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
+            @Html.DisplayNameFor(model => model.product.Id)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
+            @Html.DisplayFor(model => model.product.Id)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.product.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.product.Name)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Brand)
+            @Html.DisplayNameFor(model => model.product.Brand)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Brand)
+            @Html.DisplayFor(model => model.product.Brand)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.product.Description)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
+            @Html.DisplayFor(model => model.product.Description)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
+            @Html.DisplayNameFor(model => model.product.Price)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Price)
+            @Html.DisplayFor(model => model.product.Price)
         </dd>
 
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StockLevel)
+            @Html.DisplayNameFor(model => model.product.StockLevel)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StockLevel)
+            @Html.DisplayFor(model => model.product.StockLevel)
         </dd>
     </dl>
 </div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Review.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Review.firstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Review.productReviewRating)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Review.productReviewContent)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Reviews)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.firstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.productReviewRating)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.productReviewContent)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
