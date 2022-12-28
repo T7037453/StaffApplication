@@ -89,6 +89,7 @@ public class ProductRepository : IProductsRepository
 
     public async Task<IEnumerable<ProductDto>> GetProductsAsync(string name)
     {
+        if (_cache.TryGetValue("ProductsList", out IEnumerable<ProductDto?> productsList)) { return productsList; };
             var tokenClient = _clientFactory.CreateClient();
 
             var authBaseAddress = _configuration["Auth:Authority"];
@@ -118,6 +119,7 @@ public class ProductRepository : IProductsRepository
         //response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadAsAsync<IEnumerable<ProductDto>>();
+        _cache.Set("ProductsList", result);
             return result;
 
         }
