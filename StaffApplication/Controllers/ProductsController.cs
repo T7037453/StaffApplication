@@ -61,24 +61,46 @@ public class ProductsController : Controller
             return BadRequest();
         }
 
+        var product = new ProductDto();
+        var ViewModel = new ProductDetailsViewModel();
+        IEnumerable<ReviewDto> reviews;
+
         try
         {
-            var product = await _productsRepository.GetProductAsync(id.Value);
-            var reviews = await _reviewsService.GetReviewsAsync(id.Value);
-            var ViewModel = new ProductDetailsViewModel();
+            product = await _productsRepository.GetProductAsync(id.Value);
+            ViewModel = new ProductDetailsViewModel();
             ViewModel.product = product;
-            ViewModel.Reviews = reviews;
+            
             if (product == null)
             {
-                return NotFound();
+                
             }
-            return View(ViewModel);
+            
 
         }
         catch
         {
             _logger.LogWarning("Exception occured using the Products Repository");
-            return StatusCode(StatusCodes.Status503ServiceUnavailable);
+            ViewModel.product = product;
         }
+        try
+        {
+            reviews = await _reviewsService.GetReviewsAsync(id.Value);
+            ViewModel = new ProductDetailsViewModel();
+            ViewModel.Reviews = reviews;
+
+            if (reviews == null)
+            {
+                
+            }
+        }
+        catch
+        {
+            _logger.LogWarning("Exception occured using the Reviews Service");
+            ViewModel.Reviews = Array.Empty<ReviewDto>();
+            
+        }
+
+        return View(ViewModel);
     }
 }
