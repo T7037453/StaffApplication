@@ -40,11 +40,6 @@ jobs:
             --configuration $BUILD_CONFIGURATION \
             --no-build \
             --output $PUBLISH_PATH
-      - name: Store build artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: build
-          path: ${{ env.PUBLISH_PATH }}
           
   deploy-tests:
     runs-on: ubuntu-latest
@@ -54,10 +49,6 @@ jobs:
 #     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 #   if: github.ref == 'refs/heads/master'
     steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: build
-          path: ${{ env.PUBLISH_PATH }}
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
