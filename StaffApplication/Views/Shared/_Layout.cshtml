@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/StaffApplication.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 <body>
     <header>
@@ -23,13 +22,7 @@
                         @{
                             if (User.Identity.IsAuthenticated == false)
                             {
-                                <li class="nav-item ">
-
-                                    <span class="material-symbols-outlined align-bottom">
-                                        account_circle
-
-                                    </span>
-                                </li>
+                                
                                 <li class="nav-item ">
 
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Sign-In</a>
@@ -38,13 +31,7 @@
 
                             else
                             {
-                                <li class="nav-item ">
-
-                                    <span class="material-symbols-outlined align-bottom">
-                                        account_circle
-
-                                    </span>
-                                </li>
+                                
                                 <li class="nav-item ">
 
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
