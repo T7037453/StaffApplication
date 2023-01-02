@@ -10,6 +10,7 @@ using NPOI.SS.Formula.Functions;
 using StaffApplication.Controllers;
 using StaffApplication.Services;
 using StaffApplication.Services.Products;
+using StaffApplication.Services.Reviews;
 
 namespace StaffApplication.Tests
 {
@@ -30,8 +31,10 @@ namespace StaffApplication.Tests
             //Arrange
             var mockLogger = new Mock<ILogger<ProductsController>>();
             var mockProducts = new Mock<IProductsRepository>();
+            var mockReviews = new Mock<IReviewsService>();
             var controller = new ProductsController(mockLogger.Object, 
-                                                    mockProducts.Object);
+                                                    mockProducts.Object,
+                                                    mockReviews.Object);
             controller.ModelState.AddModelError("Test", "Test2");
 
             //Act
