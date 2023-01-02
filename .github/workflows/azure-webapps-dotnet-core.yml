@@ -40,7 +40,12 @@ jobs:
             --configuration $BUILD_CONFIGURATION \
             --no-build \
             --output $PUBLISH_PATH
-            
+      - name: Store build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: ${{ env.PUBLISH_PATH }}
+          
   deploy-tests:
     runs-on: ubuntu-latest
     needs: build
