@@ -4,6 +4,9 @@ using Polly;
 using Polly.Extensions.Http;
 using StaffApplication.Services.Cache;
 using StaffApplication.Services.Reviews;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +35,7 @@ builder.Services.AddAuth0WebAppAuthentication(options => {
     options.ClientId = builder.Configuration["Auth:ClientId"];
 });
 
+
 builder.Services.AddSingleton<Cache>();
 
 
@@ -52,6 +56,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthentication();
+
+
 app.UseAuthorization();
 
 app.MapControllerRoute(

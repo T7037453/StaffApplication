@@ -3,11 +3,11 @@
 @{
     if (User.Identity.IsAuthenticated)
     {
-        ViewData["Title"] = $"{User.Identity.Name}'s Value Fetch";
+        ViewData["Title"] = "Welcome " + $"{User.Identity.Name}";
     }
     else
     {
-        ViewData["Title"] = "Generic Value Fetch";
+        ViewData["Title"] = "Welcome to the ThAmCo Staff Application. Login to continue!";
     }
 }
 
