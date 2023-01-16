@@ -1,4 +1,5 @@
-﻿<div class="row">
+﻿@using System.Security.Claims
+<div class="row">
     <div class="col-md-12">
 
         <h3>Claims associated with current User</h3>
@@ -23,7 +24,10 @@
                     <td>@claim.Value</td>
                 </tr>
             }
-            </tbody>
+                
         </table>
+        </tbody>
+        
+
     </div>
 </div>

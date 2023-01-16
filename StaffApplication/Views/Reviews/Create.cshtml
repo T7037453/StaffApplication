@@ -1,0 +1,33 @@
+﻿@model StaffApplication.Services.Reviews.ReviewDto
+
+
+<h2>Create</h2>
+<form method="post">
+    <p>
+        <label asp-for="Title">Review Title:</label>
+        <input asp-for="Title" />
+    </p>
+
+    <p>
+        <label asp-for="firstName">Name:</label>
+        <input asp-for="firstName" />
+    </p>
+
+    <p>
+        <label asp-for="productId">Product ID:</label>
+        <input asp-for="productId" name="productId" />
+    </p>
+
+    <p>
+        <label asp-for="productReviewRating">Product Rating:</label>
+        <input asp-for="productReviewRating" />
+    </p>
+
+    <p>
+        <label asp-for="productReviewContent">Product Review:</label>
+        <input asp-for="productReviewContent" />
+    </p>
+    <p><button type="submit">Sumbit</button></p>
+
+
+</form>

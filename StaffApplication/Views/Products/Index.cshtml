@@ -52,9 +52,16 @@
                     @Html.DisplayFor(model => item.StockLevel)
                 </td>
                 <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                </td>
+                <td>
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<a asp-action="Create">Create New Product</a>

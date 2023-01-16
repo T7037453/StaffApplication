@@ -8,6 +8,10 @@ namespace StaffApplication.Services.Reviews
 
         Task<ReviewDto> GetReviewAsync(int id);
 
-        Task<ReviewDto> PostReviewAsync(ReviewDto review);
+        Task<ReviewDto> CreateReviewAsync(ReviewDto review);
+
+        Task<ReviewDto> DeleteReviewAsync(int id);
+
+        Task<ReviewDto> EditReviewAsync(ReviewDto review, int id);
     }
 }

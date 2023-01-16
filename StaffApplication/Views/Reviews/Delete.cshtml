@@ -1,0 +1,17 @@
+﻿@model StaffApplication.Services.Reviews.ReviewDto
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+<form method="post">
+    <div>
+        <h4>Are you sure you wish to delete this review?</h4>
+        <p><button type="submit" asp-route-productId="@Model.productId">Confim Deletion</button></p>
+
+    </div>
+</form>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

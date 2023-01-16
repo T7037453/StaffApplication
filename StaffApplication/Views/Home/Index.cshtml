@@ -11,23 +11,65 @@
     }
 }
 
-<h1>@ViewData["Title"]</h1>
+<h1 style="text-align: center;">@ViewData["Title"]</h1>
 
-<div>
-    <h4>ValuesGetDto</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-    </dl>
-</div>
+@{
+if (User.Identity.IsAuthenticated)
+{
+    <div class="mt-5 d-flex align-content-center">
+        <div class="card" style="width: 18rem; margin: 10px;">
+            <h1 class="card-title" style="text-align: center;">Products</h1>
+            <p class="card-text" style="text-align: center;">View the products available on the ThAmCo Store</p>
+            <hr class="my-4" />
+            <p class="lead" style="text-align: center;">
+                    <a class="btn btn-primary btn-group-lg" asp-area="" asp-controller="Products" asp-action="Index">View</a>
+            </p>
+        </div>
+
+        <div class="card" style="width: 18rem; margin: 10px;">
+            <h1 class="card-title" style="text-align: center;">Users</h1>
+            <p class="card-text" style="text-align: center;">Manage the users of the ThAmCo System</p>
+            <hr class="my-4" />
+            <p class="lead" style="text-align: center;">
+                    <a class="btn btn-primary btn-group-lg" asp-area="" asp-controller="Accounts" asp-action="Index">View</a>
+            </p>
+        </div>
+
+            <div class="card" style="width: 18rem; margin: 10px;">
+                <h1 class="card-title" style="text-align: center;">Orders</h1>
+                <p class="card-text" style="text-align: center;">Manage the orders of the ThAmCo System</p>
+                <hr class="my-4" />
+                <p class="lead" style="text-align: center;">
+                    <button class="btn btn-primary btn-group-lg" disabled asp-area="" asp-controller="" asp-action="">View</button>
+                </p>
+            </div>
+
+            <div class="card" style="width: 18rem; margin: 10px;">
+                <h1 class="card-title" style="text-align: center;">Invoices</h1>
+                <p class="card-text" style="text-align: center;">Manage the invoices of the ThAmCo System</p>
+                <hr class="my-4" />
+                <p class="lead" style="text-align: center;">
+                    <button class="btn btn-primary btn-group-lg" disabled asp-area="" asp-controller="" asp-action="">View</button>
+                </p>
+            </div>
+
+            <div class="card" style="width: 18rem; margin: 10px;">
+                <h1 class="card-title" style="text-align: center;"> Restock</h1>
+                <p class="card-text" style="text-align: center;">Manage the purchase requests of the ThAmCo System</p>
+                <hr class="my-4" />
+                <p class="lead" style="text-align: center;">
+                    <button class="btn btn-primary btn-group-lg" disabled asp-area="" asp-controller="" asp-action="">View</button>
+                </p>
+            </div>
+
+    </div>
+
+        <div class="mt-5 d-flex align-content-center">
+        
+        </div>
+}
+else
+{
+ 
+}
+}

@@ -14,6 +14,22 @@ public class FakeReviewsService : IReviewsService
         new ReviewDto {Id = 5, Title = "TestReview5", productId = 3, productReviewContent = "TestReview5", productReviewRating = 5, displayReview = true, anonymized = false, firstName = "TestReviewUser5"},
         new ReviewDto {Id = 6, Title = "TestReview6", productId = 3, productReviewContent = "TestReview6", productReviewRating = 5, displayReview = true, anonymized = false, firstName = "TestReviewUser6"},
     };
+
+    public Task<ReviewDto> CreateReviewAsync(ReviewDto review)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ReviewDto> DeleteReviewAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ReviewDto> EditReviewAsync(ReviewDto review, int id)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<ReviewDto> GetReviewAsync(int id)
     {
         var review = _reviews.FirstOrDefault(p => p.Id == id);
@@ -31,8 +47,5 @@ public class FakeReviewsService : IReviewsService
         return Task.FromResult(reviews);
     }
 
-    public Task<ReviewDto> PostReviewAsync(ReviewDto review)
-    {
-        throw new NotImplementedException();
-    }
+
 }

@@ -67,7 +67,7 @@ public class ReviewsService : IReviewsService
             new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
 
 
-        HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.GetAsync("/reviews" + id));
+        HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.GetAsync("/reviews/" + id));
         response.EnsureSuccessStatusCode();
 
         var result = await response.Content.ReadAsAsync<ReviewDto>();
@@ -136,6 +136,138 @@ public class ReviewsService : IReviewsService
     public Task<ReviewDto> PostReviewAsync(ReviewDto review)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<ReviewDto> CreateReviewAsync(ReviewDto review)
+    {
+
+        //var response = await _client.GetAsync("/products/" + id);
+        var tokenClient = _clientFactory.CreateClient();
+
+        var authBaseAddress = _configuration["Auth:Authority"];
+        tokenClient.BaseAddress = new Uri(authBaseAddress);
+
+        var tokenParams = new Dictionary<string, string>
+        {
+            { "grant_type", "client_credentials" },
+            { "client_id", _configuration["Auth:ClientId"] },
+            { "client_secret", _configuration["Auth:ClientSecret"] },
+            { "audience", _configuration["WebServices:Reviews:AuthAudience"] },
+        };
+
+        var tokenFrom = new FormUrlEncodedContent(tokenParams);
+        var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenFrom);
+        tokenResponse.EnsureSuccessStatusCode();
+        var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
+
+        var client = _clientFactory.CreateClient();
+
+        var ReviewParams = new Dictionary<string, string>
+        {
+            {"Title", review.Title},
+            {"firstName", review.firstName},
+            {"productReviewContent", review.productReviewContent},
+            {"productReviewRating", review.productReviewRating.ToString()},
+
+        };
+
+        var serviceBaseAddress = _configuration["WebServices:Reviews:BaseURL"];
+        client.BaseAddress = new Uri(serviceBaseAddress);
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
+
+
+        HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.PostAsJsonAsync("/reviews", review));
+        response.EnsureSuccessStatusCode();
+
+        var result = await response.Content.ReadAsAsync<ReviewDto>();
+        return result;
+
+    }
+
+    public async Task<ReviewDto> DeleteReviewAsync(int id)
+    {
+
+        //var response = await _client.GetAsync("/products/" + id);
+        var tokenClient = _clientFactory.CreateClient();
+
+        var authBaseAddress = _configuration["Auth:Authority"];
+        tokenClient.BaseAddress = new Uri(authBaseAddress);
+
+        var tokenParams = new Dictionary<string, string>
+        {
+            { "grant_type", "client_credentials" },
+            { "client_id", _configuration["Auth:ClientId"] },
+            { "client_secret", _configuration["Auth:ClientSecret"] },
+            { "audience", _configuration["WebServices:Reviews:AuthAudience"] },
+        };
+
+        var tokenFrom = new FormUrlEncodedContent(tokenParams);
+        var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenFrom);
+        tokenResponse.EnsureSuccessStatusCode();
+        var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
+
+        var client = _clientFactory.CreateClient();
+
+        var serviceBaseAddress = _configuration["WebServices:Reviews:BaseURL"];
+        client.BaseAddress = new Uri(serviceBaseAddress);
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
+
+
+        HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.DeleteAsync("/reviews/" + id));
+        response.EnsureSuccessStatusCode();
+
+        var result = await response.Content.ReadAsAsync<ReviewDto>();
+        return result;
+
+    }
+
+    public async Task<ReviewDto> EditReviewAsync(ReviewDto review, int id)
+    {
+
+        //var response = await _client.GetAsync("/products/" + id);
+        var tokenClient = _clientFactory.CreateClient();
+
+        var authBaseAddress = _configuration["Auth:Authority"];
+        tokenClient.BaseAddress = new Uri(authBaseAddress);
+
+        var tokenParams = new Dictionary<string, string>
+        {
+            { "grant_type", "client_credentials" },
+            { "client_id", _configuration["Auth:ClientId"] },
+            { "client_secret", _configuration["Auth:ClientSecret"] },
+            { "audience", _configuration["WebServices:Reviews:AuthAudience"] },
+        };
+
+        var tokenFrom = new FormUrlEncodedContent(tokenParams);
+        var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenFrom);
+        tokenResponse.EnsureSuccessStatusCode();
+        var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
+
+        var client = _clientFactory.CreateClient();
+
+        var ReviewParams = new Dictionary<string, string>
+        {
+            {"Title", review.Title},
+            {"firstName", review.firstName},
+            {"productReviewContent", review.productReviewContent},
+            {"productReviewRating", review.productReviewRating.ToString()},
+
+        };
+
+        var serviceBaseAddress = _configuration["WebServices:Reviews:BaseURL"];
+        client.BaseAddress = new Uri(serviceBaseAddress);
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
+
+
+        HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.PutAsJsonAsync("/reviews/" + id, ReviewParams));
+        response.EnsureSuccessStatusCode();
+
+        var result = await response.Content.ReadAsAsync<ReviewDto>();
+        return result;
+
     }
 }
 

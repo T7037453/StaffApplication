@@ -1,0 +1,60 @@
+﻿@model StaffApplication.Services.Reviews.ReviewDto
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div>
+    <h4>Detail</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.productId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.productId)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.firstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.firstName)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.productReviewContent)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.productReviewContent)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.productReviewRating)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.productReviewRating)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.displayReview)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.displayReview)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.anonymized)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.anonymized)
+        </dd>
+
+    </dl>
+</div>

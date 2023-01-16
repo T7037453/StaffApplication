@@ -1,0 +1,44 @@
+﻿@model StaffApplication.Models.AccountsDetailsViewModel
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Product Repository</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.accounts.user_id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.accounts.user_id)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.accounts.nickname)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.accounts.nickname)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.accounts.name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.accounts.name)
+        </dd>
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.accounts.last_login)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.accounts.last_login)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

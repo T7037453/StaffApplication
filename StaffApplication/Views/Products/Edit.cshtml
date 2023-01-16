@@ -1,0 +1,31 @@
+﻿@model StaffApplication.Services.Products.ProductDto
+
+<h2>Edit</h2>
+<form method="post">
+    <p>
+        <label asp-for="Name">Product Name:</label>
+        <input asp-for="Name" />
+    </p>
+
+    <p>
+        <label asp-for="Brand">Product Brand:</label>
+        <input asp-for="Brand" />
+    </p>
+
+    <p>
+        <label asp-for="Description">Product Description:</label>
+        <input asp-for="Description" />
+    </p>
+    <p>
+        <label asp-for="Price">Product Price:</label>
+        <input asp-for="Price" />
+    </p>
+
+    <p>
+        <label asp-for="StockLevel">Product Stock Level:</label>
+        <input asp-for="StockLevel" />
+    </p>
+    <p><button type="submit">Sumbit</button></p>
+
+
+</form>

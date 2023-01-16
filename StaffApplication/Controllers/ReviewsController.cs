@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
 using StaffApplication.Services.Products;
 using StaffApplication.Services.Reviews;
 
@@ -41,72 +43,109 @@ namespace StaffApplication.Controllers
         }
 
         // GET: ReviewsController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            var review = new ReviewDto();
+            try
+            {
+                review = await _reviewsService.GetReviewAsync(id);
+         
+            }
+            catch
+            {
+
+            }
+            
+            return View(review);
         }
 
         // GET: ReviewsController/Create
-        public ActionResult Create()
+        public async Task<IActionResult> Create(int productId)
         {
-            return View();
+            var ViewModel = new ReviewDto();
+            ViewModel.productId = productId;
+            return View(ViewModel);
         }
 
         // POST: ReviewsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public async Task<IActionResult> Create(ReviewDto review)
         {
+            bool update = false;
             try
             {
-                return RedirectToAction(nameof(Index));
+                review = await _reviewsService.CreateReviewAsync(review);
             }
             catch
             {
-                return View();
+                _logger.LogWarning("Exception occured using the Reviews Service");
+                update = false;
             }
+            return RedirectToAction("Index", "Products");
         }
 
         // GET: ReviewsController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(ReviewDto review)
         {
-            return View();
+            var ViewModel = new ReviewDto();
+            ViewModel.productId = review.productId;
+            return View(ViewModel);
         }
 
         // POST: ReviewsController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async  Task<IActionResult> Edit(ReviewDto review, int id)
         {
+            bool update = false;
+
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                review = await _reviewsService.EditReviewAsync(review, id);
+                update = true;
+
             }
             catch
             {
-                return View();
+                _logger.LogWarning("Exception occured using the Reviews Service");
+                update = false;
             }
+
+            return RedirectToAction("Index", "Products");
         }
 
         // GET: ReviewsController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(ReviewDto review)
         {
-            return View();
+            var ViewModel = new ReviewDto();
+            ViewModel.productId = review.productId;
+            return View(ViewModel);
         }
 
         // POST: ReviewsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<IActionResult> Delete(int id, int productId)
         {
+            bool update = false;
+            var review = new ReviewDto();
+            
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                review = await _reviewsService.DeleteReviewAsync(id);
+                update = true;
+                
             }
             catch
             {
-                return View();
+                _logger.LogWarning("Exception occured using the Reviews Service");
+                update = false;
             }
+
+            return RedirectToAction("Index", "Products");
         }
     }
 }

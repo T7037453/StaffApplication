@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StaffApplication.Models;
 using System.Diagnostics;
+using System.Security.Claims;
+using System.Security.Principal;
 
 namespace StaffApplication.Controllers
 {
@@ -15,6 +17,20 @@ namespace StaffApplication.Controllers
 
         public IActionResult Index()
         {
+            if (User != null)
+            {
+
+                List<Claim> roleClaims = HttpContext.User.FindAll(ClaimTypes.Role).ToList();
+                var roles = new List<string>();
+
+                foreach (var role in roleClaims)
+                {
+                    roles.Add(role.Value);
+                }
+            }
+            
+
+
             return View();
         }
 

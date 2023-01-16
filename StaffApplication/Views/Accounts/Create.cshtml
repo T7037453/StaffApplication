@@ -1,0 +1,43 @@
+﻿@model StaffApplication.Models.AccountsCreationViewModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Create</h2>
+<form method="post">
+    <p>
+        <label asp-for="user_id">Your User ID:</label>
+        <input asp-for="user_id" />
+    </p>
+
+    <p>
+        <label asp-for="username">Your Username:</label>
+        <input asp-for="username" />
+    </p>
+
+    <p>
+        <label asp-for="name">Your Name:</label>
+        <input asp-for="name" />
+    </p>
+    <p>
+        <label asp-for="nickname">Your Nickname:</label>
+        <input asp-for="nickname" />
+    </p>
+
+    <p>
+        <label asp-for="email">Your Email Address:</label>
+        <input asp-for="email" />
+    </p>
+
+    <p>
+        <label asp-for="password">Your Password:</label>
+        <input asp-for="password" />
+    </p>
+
+    <p>
+        <label asp-for="connection">Username-Password-Authentication:</label>
+    </p>
+    <p><button type="submit">Sumbit</button></p>
+
+
+</form>

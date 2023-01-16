@@ -7,6 +7,7 @@ using StaffApplication.Services.Reviews;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Builder;
+using StaffApplication.Services.Accounts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,13 +19,19 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
+
     builder.Services.AddHttpClient<ProductRepository>()
                     .AddPolicyHandler(GetRetryPolicy());
+
     builder.Services.AddTransient<IProductsRepository, ProductRepository>();
 
     builder.Services.AddHttpClient<ReviewsService>()
                     .AddPolicyHandler(GetRetryPolicy());
     builder.Services.AddTransient<IReviewsService, ReviewsService>();
+
+    builder.Services.AddHttpClient<AccountService>()
+                    .AddPolicyHandler(GetRetryPolicy());
+    builder.Services.AddTransient<IAccountsService, AccountService>();
 }
 
 // Add services to the container.
@@ -35,6 +42,12 @@ builder.Services.AddAuth0WebAppAuthentication(options => {
     options.ClientId = builder.Configuration["Auth:ClientId"];
 });
 
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ReadAccess", policy =>
+    policy.RequireClaim("scope", "read:details"));
+});
 
 builder.Services.AddSingleton<Cache>();
 
@@ -66,7 +79,7 @@ app.MapControllerRoute(
 
 app.Run();
 
- IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
+ static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
 {
     return HttpPolicyExtensions
         .HandleTransientHttpError()

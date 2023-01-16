@@ -1,10 +1,16 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Polly;
+using Polly.CircuitBreaker;
+using Polly.Extensions.Http;
 using Polly.Retry;
+using StaffApplication.Models;
 using StaffApplication.Services.Cache;
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace StaffApplication.Services.Products;
 
@@ -18,7 +24,13 @@ public class ProductRepository : IProductsRepository
         Policy<HttpResponseMessage>
             .Handle<HttpRequestException>()
             .OrResult(x => x.StatusCode is >= HttpStatusCode.InternalServerError || x.StatusCode == HttpStatusCode.RequestTimeout)
-            .RetryAsync(5);
+            .RetryAsync(3);
+
+    private readonly AsyncCircuitBreakerPolicy<HttpResponseMessage> _circuitBreaker =
+        Policy<HttpResponseMessage>
+        .Handle<HttpRequestException>()
+        .OrTransientHttpError()
+        .CircuitBreakerAsync(2, TimeSpan.FromSeconds(2));
 
 
     public ProductRepository(IHttpClientFactory clientFactory,
@@ -87,9 +99,13 @@ public class ProductRepository : IProductsRepository
 
     }
 
-    public async Task<IEnumerable<ProductDto>> GetProductsAsync(string name)
+    public async Task<IEnumerable<ProductDto>> GetProductsAsync(string? name, bool update)
     {
-        if (_cache.TryGetValue("ProductsList", out IEnumerable<ProductDto?> productsList)) { return productsList; };
+        if(update = false)
+        {
+            if (_cache.TryGetValue("ProductsList", out IEnumerable<ProductDto?> productsList)) { return productsList; };
+        }
+        
             var tokenClient = _clientFactory.CreateClient();
 
             var authBaseAddress = _configuration["Auth:Authority"];
@@ -115,6 +131,7 @@ public class ProductRepository : IProductsRepository
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
 
+        //HttpResponseMessage response = await client.GetAsync("/products");
         HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.GetAsync("/products"));
         //response.EnsureSuccessStatusCode();
 
@@ -123,5 +140,133 @@ public class ProductRepository : IProductsRepository
             return result;
 
         }
+
+    public async Task<ProductDto> CreateProductAsync(ProductDto product)
+    {
+        var tokenClient = _clientFactory.CreateClient();
+
+        var authBaseAddress = _configuration["Auth:Authority"];
+        tokenClient.BaseAddress = new Uri(authBaseAddress);
+
+        var tokenParams = new Dictionary<string, string>
+            {
+                { "grant_type", "client_credentials" },
+                { "client_id", _configuration["Auth:ClientId"] },
+                { "client_secret", _configuration["Auth:ClientSecret"] },
+                { "audience", _configuration["WebServices:Products:AuthAudience"] },
+            };
+
+        var tokenFrom = new FormUrlEncodedContent(tokenParams);
+        var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenFrom);
+        tokenResponse.EnsureSuccessStatusCode();
+        var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
+
+        var client = _clientFactory.CreateClient();
+
+        var ProductParams = new Dictionary<string, string>
+        {
+            {"Name", product.Name },
+            {"Brand", product.Brand },
+            {"Description", product.Description },
+            {"Price", product.Price.ToString() },
+            {"StockLevel", product.StockLevel.ToString() },
+        };
+
+        var serviceBaseAddress = _configuration["WebServices:Products:BaseURL"];
+        client.BaseAddress = new Uri(serviceBaseAddress);
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
+
+        //HttpResponseMessage response = await client.GetAsync("/products");
+        HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.PostAsJsonAsync("/products", product));
+        //response.EnsureSuccessStatusCode();
+
+        var result = await response.Content.ReadAsAsync<ProductDto>();
+        return result;
+
     }
+
+    public async Task<ProductDto> DeleteProductAsync(int id)
+    {
+        var tokenClient = _clientFactory.CreateClient();
+
+        var authBaseAddress = _configuration["Auth:Authority"];
+        tokenClient.BaseAddress = new Uri(authBaseAddress);
+
+        var tokenParams = new Dictionary<string, string>
+            {
+                { "grant_type", "client_credentials" },
+                { "client_id", _configuration["Auth:ClientId"] },
+                { "client_secret", _configuration["Auth:ClientSecret"] },
+                { "audience", _configuration["WebServices:Products:AuthAudience"] },
+            };
+
+        var tokenFrom = new FormUrlEncodedContent(tokenParams);
+        var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenFrom);
+        tokenResponse.EnsureSuccessStatusCode();
+        var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
+
+        var client = _clientFactory.CreateClient();
+
+        var serviceBaseAddress = _configuration["WebServices:Products:BaseURL"];
+        client.BaseAddress = new Uri(serviceBaseAddress);
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
+
+        //HttpResponseMessage response = await client.GetAsync("/products");
+        HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.DeleteAsync("/products/" + id));
+        //response.EnsureSuccessStatusCode();
+
+        var result = await response.Content.ReadAsAsync<ProductDto>();
+        return result;
+
+    }
+
+    public async Task<Product> EditProductAsync(Product product, int id)
+    {
+        var tokenClient = _clientFactory.CreateClient();
+
+        var authBaseAddress = _configuration["Auth:Authority"];
+        tokenClient.BaseAddress = new Uri(authBaseAddress);
+
+        var tokenParams = new Dictionary<string, string>
+            {
+                { "grant_type", "client_credentials" },
+                { "client_id", _configuration["Auth:ClientId"] },
+                { "client_secret", _configuration["Auth:ClientSecret"] },
+                { "audience", _configuration["WebServices:Products:AuthAudience"] },
+            };
+
+        var tokenFrom = new FormUrlEncodedContent(tokenParams);
+        var tokenResponse = await tokenClient.PostAsync("oauth/token", tokenFrom);
+        tokenResponse.EnsureSuccessStatusCode();
+        var tokenInfo = await tokenResponse.Content.ReadFromJsonAsync<TokenDto>();
+
+        var client = _clientFactory.CreateClient();
+
+        var ProductParams = new Dictionary<string, string>
+        {
+            {"Name", product.Name },
+            {"Brand", product.Brand },
+            {"Description", product.Description },
+            {"Price", product.Price.ToString() },
+            {"StockLevel", product.StockLevel.ToString() },
+        };
+
+        var serviceBaseAddress = _configuration["WebServices:Products:BaseURL"];
+        client.BaseAddress = new Uri(serviceBaseAddress);
+        client.DefaultRequestHeaders.Authorization =
+            new AuthenticationHeaderValue("Bearer", tokenInfo?.access_token);
+
+        //HttpResponseMessage response = await client.GetAsync("/products");
+        HttpResponseMessage response = await _retryPolicy.ExecuteAsync(() => client.PutAsJsonAsync("/products/" + id, ProductParams));
+        //response.EnsureSuccessStatusCode();
+
+        var result = await response.Content.ReadAsAsync<Product>();
+        return result;
+
+    }
+}
+
+
 

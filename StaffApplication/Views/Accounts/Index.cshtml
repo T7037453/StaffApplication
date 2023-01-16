@@ -1,0 +1,55 @@
+﻿@model IEnumerable<StaffApplication.Services.Accounts.AccountDto>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.user_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nickname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.last_login)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.user_id)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.nickname)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.last_login)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.user_id">Edit</a>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.user_id">Details</a>
+                </td>
+                    <td>
+                    <a asp-action="Delete" asp-route-id="@item.user_id">Delete</a>
+                    </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Create">Create New Account</a>

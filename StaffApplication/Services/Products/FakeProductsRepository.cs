@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using StaffApplication.Models;
+using System;
 
 namespace StaffApplication.Services.Products;
 
@@ -13,6 +15,22 @@ public class FakeProductsRepository : IProductsRepository
         new ProductDto {Id = 4, Name = "TestName4", Brand = "TestBrand4", Description = "TestDesc", Price = 4.99, StockLevel = 4},
         new ProductDto {Id = 5, Name = "TestName5", Brand = "TestBrand5", Description = "TestDesc", Price = 5.99, StockLevel = 5}
     };
+
+    public Task<ProductDto> CreateProductAsync(ProductDto product)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ProductDto> DeleteProductAsync(int id)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Product> EditProductAsync(Product product, int id)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<ProductDto> GetProductAsync(int id)
     {
         var product = _products.FirstOrDefault(p => p.Id == id);
@@ -20,7 +38,7 @@ public class FakeProductsRepository : IProductsRepository
     }
 
 
-    public Task<IEnumerable<ProductDto>> GetProductsAsync(string name)
+    public Task<IEnumerable<ProductDto>> GetProductsAsync(string? name, bool update)
     {
         var products = _products.AsEnumerable();
         if (name != null)

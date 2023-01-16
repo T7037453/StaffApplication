@@ -4,8 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 using Polly.Retry;
 using StaffApplication.Models;
+using StaffApplication.Services.Accounts;
 using StaffApplication.Services.Products;
 using StaffApplication.Services.Reviews;
 
@@ -28,7 +30,7 @@ public class ProductsController : Controller
     }
 
     // GET: /products/
-    public async Task<IActionResult> Index([FromQuery] string? name)
+    public async Task<IActionResult> Index([FromQuery] string? name, bool update)
     {
         if(!ModelState.IsValid)
         {
@@ -39,7 +41,7 @@ public class ProductsController : Controller
         IEnumerable<ProductDto> products = null;
         try
         {
-            products = await _productsRepository.GetProductsAsync(name);
+            products = await _productsRepository.GetProductsAsync(name, update);
 
         }
         catch
@@ -53,7 +55,7 @@ public class ProductsController : Controller
     }
 
     // GET: /products/details/{id}
-    [Authorize]
+    [Authorize (Roles ="Management")]
     public async Task<IActionResult> Details (int? id)
     {
         if (id == null)
@@ -86,7 +88,6 @@ public class ProductsController : Controller
         try
         {
             reviews = await _reviewsService.GetReviewsAsync(id.Value);
-            ViewModel = new ProductDetailsViewModel();
             ViewModel.Reviews = reviews;
 
             if (reviews == null)
@@ -102,5 +103,91 @@ public class ProductsController : Controller
         }
 
         return View(ViewModel);
+    }
+
+    public ActionResult Create()
+    {
+        var ViewModel = new ProductDto();
+        return View(ViewModel);
+    }
+
+    // POST: ProductsController/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Create(ProductDto account)
+    {
+        bool update = false;
+        try
+        {
+            account = await _productsRepository.CreateProductAsync(account);
+            update = true;
+        }
+        catch
+        {
+            _logger.LogWarning("Exception occured using the Accounts Service");
+            update = false;
+
+        }
+        return RedirectToAction("Index", update);
+
+    }
+
+    //Get Delete
+    public ActionResult Delete(ProductDto product)
+    {
+        var ViewModel = new ProductDto();
+        ViewModel.Id = product.Id;
+        return View(ViewModel);
+    }
+
+    //Post Delete
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Delete(int id)
+    {
+        bool update = false;
+        var product = new ProductDto();
+        try
+        {
+            product = await _productsRepository.DeleteProductAsync(id);
+            update = true;
+        }
+        catch
+        {
+            _logger.LogWarning("Exception occured using the Accounts Service");
+            update = false;
+
+        }
+        return RedirectToAction("Index", update);
+
+    }
+
+    //Get Edit
+    public ActionResult Edit(ProductDto product)
+    {
+        var ViewModel = new ProductDto();
+        ViewModel.Id = product.Id;
+        return View(ViewModel);
+    }
+
+    //Post Edit
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(Product product, int id)
+    {
+        bool update = false;
+        try
+        {
+            product = await _productsRepository.EditProductAsync(product, id);
+            update = true;
+        }
+        catch
+        {
+            _logger.LogWarning("Exception occured using the Products Service");
+            update = false;
+
+        }
+        return RedirectToAction("Index", update);
+
     }
 }

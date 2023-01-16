@@ -87,12 +87,20 @@
                     @Html.DisplayFor(model => item.productReviewContent)
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id"  asp-route-productId="@Model.product.Id" asp-controller="Reviews">Edit</a>
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" asp-controller="Reviews">Details</a>
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@item.Id" asp-controller="Reviews">Delete</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<a asp-action="Create" asp-route-productId="@Model.product.Id" asp-controller="Reviews">Create New Review</a>
+
 
 <div>
     <a asp-action="Index">Back to List</a>
