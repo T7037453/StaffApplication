@@ -37,7 +37,7 @@ public class FakeReviewsService : IReviewsService
     }
 
 
-    public Task<IEnumerable<ReviewDto>> GetReviewsAsync(int id)
+    public Task<IEnumerable<ReviewDto>> GetReviewsAsync(int id, bool update)
     {
         var reviews = _reviews.AsEnumerable();
         if (id != null)

@@ -19,7 +19,7 @@ namespace StaffApplication.Controllers
             _reviewsService = reviewsService;
         }
         // GET: ReviewsController
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index(int id, bool update)
         {
             if (!ModelState.IsValid)
             {
@@ -28,9 +28,11 @@ namespace StaffApplication.Controllers
             }
 
             IEnumerable<ReviewDto> reviews = null;
+            update = false;
             try
             {
-                reviews = await _reviewsService.GetReviewsAsync(id);
+                reviews = await _reviewsService.GetReviewsAsync(id, update);
+                update = true;
             }
             catch
             {

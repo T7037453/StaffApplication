@@ -35,7 +35,7 @@ namespace StaffApplication.Tests
             controller.ModelState.AddModelError("Test", "Test2");
 
             //Act
-            var result = await controller.Index(0);
+            var result = await controller.Index(0,false);
 
             //Assert
             Assert.IsType<BadRequestObjectResult>(result);
@@ -48,7 +48,7 @@ namespace StaffApplication.Tests
             var mockLogger = new Mock<ILogger<ReviewsController>>();
             var mockReviews = new Mock<IReviewsService>();
             var expected = GetTestReviews();
-            mockReviews.Setup(r => r.GetReviewsAsync(0))
+            mockReviews.Setup(r => r.GetReviewsAsync(0, false))
                                 .ReturnsAsync(expected)
                                 .Verifiable();
 
@@ -56,7 +56,7 @@ namespace StaffApplication.Tests
                                                     mockReviews.Object);
 
             //Act
-            var result = await controller.Index(0);
+            var result = await controller.Index(0, false);
 
             //Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -64,7 +64,7 @@ namespace StaffApplication.Tests
                 viewResult.ViewData.Model);
             Assert.Equal(expected.Length, model.Count());
 
-            mockReviews.Verify(p => p.GetReviewsAsync(0), Times.Once);
+            mockReviews.Verify(p => p.GetReviewsAsync(0, false), Times.Once);
 
         }
 
@@ -75,7 +75,7 @@ namespace StaffApplication.Tests
             var mockLogger = new Mock<ILogger<ReviewsController>>();
             var mockReviews = new Mock<IReviewsService>();
             var expected = GetTestReviews();
-            mockReviews.Setup(r => r.GetReviewsAsync(1))
+            mockReviews.Setup(r => r.GetReviewsAsync(1, false))
                                 .ReturnsAsync(expected)
                                 .Verifiable();
 
@@ -83,7 +83,7 @@ namespace StaffApplication.Tests
                                                     mockReviews.Object);
 
             //Act
-            var result = await controller.Index(1);
+            var result = await controller.Index(1, false);
 
             //Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -91,7 +91,7 @@ namespace StaffApplication.Tests
                 viewResult.ViewData.Model);
             Assert.Equal(expected.Length, model.Count());
 
-            mockReviews.Verify(p => p.GetReviewsAsync(1), Times.Once);
+            mockReviews.Verify(p => p.GetReviewsAsync(1, false), Times.Once);
 
         }
 
@@ -102,7 +102,7 @@ namespace StaffApplication.Tests
             var mockLogger = new Mock<ILogger<ReviewsController>>();
             var mockReviews = new Mock<IReviewsService>();
             var expected = GetTestReviews();
-            mockReviews.Setup(r => r.GetReviewsAsync(0))
+            mockReviews.Setup(r => r.GetReviewsAsync(0, false))
                                 .ThrowsAsync(new Exception())
                                 .Verifiable();
 
@@ -110,7 +110,7 @@ namespace StaffApplication.Tests
                                                     mockReviews.Object);
 
             //Act
-            var result = await controller.Index(0);
+            var result = await controller.Index(0, false);
 
             //Assert
             var viewResult = Assert.IsType<ViewResult>(result);
@@ -118,7 +118,7 @@ namespace StaffApplication.Tests
                 viewResult.ViewData.Model);
             Assert.Empty(model);
 
-            mockReviews.Verify(p => p.GetReviewsAsync(0), Times.Once);
+            mockReviews.Verify(p => p.GetReviewsAsync(0, false), Times.Once);
 
         }
 

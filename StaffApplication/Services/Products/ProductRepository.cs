@@ -101,9 +101,13 @@ public class ProductRepository : IProductsRepository
 
     public async Task<IEnumerable<ProductDto>> GetProductsAsync(string? name, bool update)
     {
-        if(update = false)
+        if(update == false)
         {
-            if (_cache.TryGetValue("ProductsList", out IEnumerable<ProductDto?> productsList)) { return productsList; };
+            var cachedData =  await GetCache();
+            if (cachedData != null)
+            {
+                return cachedData;
+            }
         }
         
             var tokenClient = _clientFactory.CreateClient();
@@ -265,6 +269,13 @@ public class ProductRepository : IProductsRepository
         var result = await response.Content.ReadAsAsync<Product>();
         return result;
 
+    }
+
+    public async Task<IEnumerable<ProductDto>> GetCache()
+    {
+        if (_cache.TryGetValue("ProductsList", out IEnumerable<ProductDto?> productsList)) { return productsList; };
+
+        return productsList;
     }
 }
 

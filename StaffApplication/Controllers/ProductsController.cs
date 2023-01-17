@@ -39,9 +39,11 @@ public class ProductsController : Controller
         }
 
         IEnumerable<ProductDto> products = null;
+        update = false;
         try
         {
             products = await _productsRepository.GetProductsAsync(name, update);
+            update = true;
 
         }
         catch
@@ -49,6 +51,7 @@ public class ProductsController : Controller
             _logger.LogWarning("Exception occured using the Product Repository");
             
             products = Array.Empty<ProductDto>();
+            update = false;
 
         }
         return View(products.ToList());
@@ -87,7 +90,7 @@ public class ProductsController : Controller
         }
         try
         {
-            reviews = await _reviewsService.GetReviewsAsync(id.Value);
+            reviews = await _reviewsService.GetReviewsAsync(id.Value, false);
             ViewModel.Reviews = reviews;
 
             if (reviews == null)
@@ -125,7 +128,7 @@ public class ProductsController : Controller
         catch
         {
             _logger.LogWarning("Exception occured using the Accounts Service");
-            update = false;
+            update = true;
 
         }
         return RedirectToAction("Index", update);
@@ -156,7 +159,7 @@ public class ProductsController : Controller
         catch
         {
             _logger.LogWarning("Exception occured using the Accounts Service");
-            update = false;
+            update = true;
 
         }
         return RedirectToAction("Index", update);
@@ -186,7 +189,7 @@ public class ProductsController : Controller
         catch
         {
             _logger.LogWarning("Exception occured using the Products Service");
-            update = false;
+            update = true;
 
         }
         return RedirectToAction("Index", update);

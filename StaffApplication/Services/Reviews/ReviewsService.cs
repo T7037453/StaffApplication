@@ -2,6 +2,7 @@
 using Polly;
 using Polly.Retry;
 using StaffApplication.Services.Cache;
+using StaffApplication.Services.Products;
 using System;
 using System.Net;
 using System.Net.Http.Headers;
@@ -87,9 +88,16 @@ public class ReviewsService : IReviewsService
 
     }
 
-    public async Task<IEnumerable<ReviewDto>> GetReviewsAsync(int id)
+    public async Task<IEnumerable<ReviewDto>> GetReviewsAsync(int id, bool update)
     {
-       if(_cache.TryGetValue("ReviewList", out IEnumerable<ReviewDto?> reviewList)) { return reviewList; };
+       if (update == false)
+        {
+            var cachedData = await GetCache(id);
+            if (cachedData != null)
+            {
+                return cachedData;
+            }
+        }
         var tokenClient = _clientFactory.CreateClient();
 
         var authBaseAddress = _configuration["Auth:Authority"];
@@ -268,6 +276,13 @@ public class ReviewsService : IReviewsService
         var result = await response.Content.ReadAsAsync<ReviewDto>();
         return result;
 
+    }
+
+    public async Task<IEnumerable<ReviewDto>> GetCache(int id)
+    {
+        if (_cache.TryGetValue("ReviewList" + id, out IEnumerable<ReviewDto?> reviewList)) { return reviewList; };
+
+        return reviewList;
     }
 }
 

@@ -4,7 +4,7 @@ namespace StaffApplication.Services.Reviews
 {
     public interface IReviewsService
     {
-        Task<IEnumerable<ReviewDto>> GetReviewsAsync(int id);
+        Task<IEnumerable<ReviewDto>> GetReviewsAsync(int id, bool update);
 
         Task<ReviewDto> GetReviewAsync(int id);
 
