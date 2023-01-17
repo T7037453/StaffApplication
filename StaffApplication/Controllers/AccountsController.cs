@@ -25,7 +25,7 @@ namespace StaffApplication.Controllers
         }
 
         // GET: AccountsController
-        [Authorize]
+        [Authorize(Roles ="Management, Staff")]
         public async Task<IActionResult> Index()
         {
             if (!ModelState.IsValid)
@@ -51,6 +51,7 @@ namespace StaffApplication.Controllers
         }
 
         // GET: AccountsController/Details/5
+        [Authorize(Roles ="Management, Staff")]
         public async Task<IActionResult> Details(string id)
 
         {
@@ -104,6 +105,7 @@ namespace StaffApplication.Controllers
         }
 
         // GET: AccountsController/Edit/5
+        [Authorize(Roles ="Management, Staff")]
         public ActionResult Edit()
         {
             var ViewModel = new AccountsCreationViewModel();
@@ -128,6 +130,7 @@ namespace StaffApplication.Controllers
         }
 
         // GET: AccountsController/Delete/5
+        [Authorize(Roles = "Management")]
         public ActionResult Delete(AccountDto account)
         {
             var ViewModel = new AccountDto();

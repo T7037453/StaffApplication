@@ -55,7 +55,7 @@ public class ProductsController : Controller
     }
 
     // GET: /products/details/{id}
-    [Authorize (Roles ="Management")]
+    [Authorize(Roles = "Management, Staff")]
     public async Task<IActionResult> Details (int? id)
     {
         if (id == null)
@@ -104,7 +104,7 @@ public class ProductsController : Controller
 
         return View(ViewModel);
     }
-
+    [Authorize(Roles ="Management, Staff")]
     public ActionResult Create()
     {
         var ViewModel = new ProductDto();
@@ -133,6 +133,7 @@ public class ProductsController : Controller
     }
 
     //Get Delete
+    [Authorize(Roles ="Management, Staff")]
     public ActionResult Delete(ProductDto product)
     {
         var ViewModel = new ProductDto();
@@ -163,6 +164,7 @@ public class ProductsController : Controller
     }
 
     //Get Edit
+    [Authorize(Roles = "Management, Staff")]
     public ActionResult Edit(ProductDto product)
     {
         var ViewModel = new ProductDto();
